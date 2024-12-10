@@ -2,15 +2,29 @@ import User from "../models/user.js";
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 
-export function getUser(req,res){
+export async function getUser(req,res){
 
-    User.find().then(
+    try{
+        const userList= await User.find()
+    res.json({
+        list:userList
+    })
+    }catch(e){
+        res.json({
+            message: "Error"
+        })
+    }
+    
+
+    //we use 'async' instead of use bellow commented code.   
+    /*  User.find().then(
         (userList)=>{
             res.json({
                 list:userList
             })
         }
-    )
+    )*/
+   
 }
 
 export function createUser(req,res){ 
@@ -78,3 +92,7 @@ export function deleteUser(req,res){
         })
     })
 };
+
+
+
+     

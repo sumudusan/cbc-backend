@@ -5,13 +5,14 @@ import jwt from 'jsonwebtoken'; // Import the jsonwebtoken library
 import studentRouter from './routes/studentRouter.js';
 import productRouter from './routes/productRouter.js';
 import userRouter from './routes/userRouter.js';
+import dotenv from "dotenv";
+dotenv.config(); //load the .env file on your repository
 
 const app = express();
 
-const mongoUrl =
-  'mongodb+srv://admin:123@cluster0.gowpw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+const mongoUrl =process.env.MONGO_DB_URI
 
-mongoose.connect(mongoUrl, {});
+mongoose.connect(mongoUrl, {}); 
 
 const connection = mongoose.connection;
 
