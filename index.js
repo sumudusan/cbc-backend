@@ -25,9 +25,9 @@ app.use(bodyParser.json());
 app.use((req, res, next) => {
   const token = req.header('Authorization')?.replace('Bearer ', ''); // Ensure there's a space after "Bearer"
   console.log(token);
-
+ 
   if (token) {
-    jwt.verify(token, 'cbc-secret-key-7973', (error, decoded) => {
+    jwt.verify(token, process.env.SECRET, (error, decoded) => {
       if (!error) {
         req.user = decoded;
       }
