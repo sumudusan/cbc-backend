@@ -32,6 +32,40 @@ export async function getUser(req,res){
 export function createUser(req,res){ 
 
     const newUserData =req.body
+    /* 
+this is run when creating a new user by a registered user who logged in now also.
+  * there are two type users have this site.   
+  1.User -  can buy products
+  2.Admin - can maintain the site. 
+
+  1.create an user. - this is normal method.
+  2.create an admin - this is a complex method. because there should be generate
+  a problem if user can create a admin acc.it should not be happen.
+  * so we do bellow scenario to prohibit it.
+
+  steps -:
+  1.check user type is a admin/user/default.
+  2.user is a admin it is not a problem.
+    user is a user/default  -
+*/
+
+if(newUserData.type == "admin"){
+    if(req.user==null){
+        res.json({
+            message: "please login as administrator to create admin accounts"
+        })
+        return
+    }
+
+    if(req.user.type != "admin"){
+        res.json({
+            message :"please login as administrator to create admin accounts"
+        })
+        return
+    }
+} 
+
+//now users cannot create admins.Only admins can create admins.
 
     newUserData.password = bcrypt.hashSync(newUserData.password,10)
 
@@ -85,6 +119,30 @@ export function loginUser(req,res){
             }
         }
     )
+}
+
+export function isAdmin(req){
+    if(req.user==null){
+        return false
+    }
+
+    if(req.user.type !="admin"){
+        return false
+    }
+
+    return true
+}
+
+export function isCustomer(req){
+    if(req.user==null){
+        return false
+    }
+
+    if(req.user.type !="customer "){
+        return false
+    }
+
+    return true
 }
 
 export function deleteUser(req,res){
