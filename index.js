@@ -2,10 +2,10 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken'; // Import the jsonwebtoken library
-import studentRouter from './routes/studentRouter.js';
 import productRouter from './routes/productRouter.js';
 import userRouter from './routes/userRouter.js';
 import dotenv from "dotenv";
+import orderRouter from './routes/orderRouter.js';
 dotenv.config(); //load the .env file on your repository
 
 const app = express();
@@ -36,9 +36,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/api/students', studentRouter);
 app.use('/api/products', productRouter);
 app.use('/api/users', userRouter);
+app.use('/api/orders', orderRouter);
 
 app.listen(5000, () => {
   console.log('Server is running on port 5000');
