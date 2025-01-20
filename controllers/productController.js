@@ -1,13 +1,17 @@
 import Product  from "../models/product.js";
 
+function isAdmin(req) {
+  return req.user && req.user.type === 'admin';
+}
+
 export function getProduct(req,res){
 
   Product.find().then(
 
     (productList)=>{
-      res.status(200).json({
-        list : productList
-      }) 
+      res.status(200).json(
+         productList
+      ) 
     }
   ).catch(
     (err)=>{
@@ -42,31 +46,34 @@ export function createProduct(req,res){
     res.json({
       message: "Product created"
     })
-  }).catch(()=>{
-    res.json({
-      message: "Product not created"
+  }).catch((error)=>{
+    res.status(403).json({
+      message:error
     })
-  })
+    }) 
 }
 
 export function deleteProduct(req,res){
-  Product.deleteOne({name : req.body.name}).then(
+  if(!isAdmin(req)){
+    res.status(403).json(
+      {
+        message : "Please login as administrator to delete products"
+      })
+      return
+  }
+
+  const productId =req.params.productId
+
+  Product.deleteOne({productId : productId}).then(
     ()=>{
-      res.json(
-        {
-          message : "Product deleted successfully"
-        }
-      )
-    }
-  ).catch(
-    ()=>{
-      res.json(
-        {
-          message : "Product not deleted"
-        }
-      )
-    }
-  )
+      res.json({
+        message : "Product deleted"
+      })
+}).catch((error)=>{
+      res.status(403).json({
+          message : error
+        })
+    })
 }
 
 export function getProductByName(req,res){
@@ -75,9 +82,9 @@ export function getProductByName(req,res){
 
   Product.find({name : name}).then(
     (productList)=>{
-      res.json({
-        list: productList
-      })
+      res.json(
+         productList
+      )
     }
   ).catch(()=>{ 
     res.json({
