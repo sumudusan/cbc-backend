@@ -76,6 +76,32 @@ export function deleteProduct(req,res){
     })
 }
 
+export function upadateProduct(req,res){
+  if(!isAdmin(req)){
+    res.status(403).json({
+      message: "please login as administrator to update product"
+    })
+    return
+  }
+
+  const productId = req.params.productId
+  const newProductData =req.body
+
+  Product.updateOne(
+    {productId : productId},
+    newProductData
+  ).then(()=>{
+    res.json({
+      message: "Product Updated"
+    })
+  }).catch((error)=>{
+    res.status(403).json({
+      message :error
+    })
+  })
+}
+
+
 export function getProductByName(req,res){
 
   const name =req.params.name;
@@ -92,4 +118,18 @@ export function getProductByName(req,res){
     })
   }
   )
+}
+
+export async function getProductById(req, res){
+
+  try{
+    const productId = req.params.productId
+
+    const product = await Product.findOne({productId : productId})
+  
+    res.json(product)
+  }catch(e){
+     res.status(500).json({e})
+  }
+ 
 }
